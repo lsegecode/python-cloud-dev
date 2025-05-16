@@ -1,15 +1,17 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from app.routers import hello, user
 from app.models.user import Base
 from app.database import engine
+from app.routers import hello, user
 
-app = FastAPI()
-
-@app.on_event("startup")
-def startup_event():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup code
     Base.metadata.create_all(bind=engine)
+    yield
+    # Shutdown code (optional cleanup)
+
+app = FastAPI(lifespan=lifespan)
 
 app.include_router(user.router, prefix="/users", tags=["Users"])
 app.include_router(hello.router, tags=["Hello"])
-
-

@@ -3,8 +3,13 @@ from logging.config import fileConfig
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
-
 from alembic import context
+
+
+from app.models.user import Base  # Import your Base
+
+
+target_metadata = Base.metadata
 
 
 # this is the Alembic Config object, which provides
